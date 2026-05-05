@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Swift Rentals | Car & Boat Reservations</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #111;
+      background: #fff;
+      line-height: 1.6;
+    }
+    header {
+      background: #000;
+      color: white;
+      padding: 18px 7%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .logo { font-size: 24px; font-weight: 800; }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: 600;
+    }
+    .hero {
+      min-height: 82vh;
+      background:
+        linear-gradient(rgba(0,0,0,.62), rgba(0,0,0,.62)),
+        url("https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1600&q=80");
+      background-size: cover;
+      background-position: center;
+      color: white;
+      display: flex;
+      align-items: center;
+      padding: 60px 7%;
+    }
+    .hero-content { max-width: 700px; }
+    .hero h1 {
+      font-size: clamp(42px, 7vw, 72px);
+      line-height: 1.05;
+      margin: 0 0 18px;
+    }
+    .hero p { font-size: 21px; margin-bottom: 28px; }
+    .btn {
+      display: inline-block;
+      background: white;
+      color: #000;
+      padding: 14px 24px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 800;
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+    .btn.dark {
+      background: #000;
+      color: white;
+    }
+    section { padding: 70px 7%; }
+    .center { text-align: center; }
+    h2 {
+      font-size: clamp(30px, 4vw, 44px);
+      margin: 0 0 12px;
+    }
+    .sub {
+      max-width: 760px;
+      margin: 0 auto 35px;
+      color: #555;
+      font-size: 18px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+    }
+    .card {
+      border: 1px solid #e6e6e6;
+      border-radius: 22px;
+      overflow: hidden;
+      background: white;
+      box-shadow: 0 10px 30px rgba(0,0,0,.06);
+    }
+    .card img {
+      width: 100%;
+      height: 190px;
+      object-fit: cover;
+      display: block;
+    }
+    .card-body { padding: 22px; }
+    .card h3 { margin: 0 0 8px; font-size: 22px; }
+    .price {
+      font-weight: 800;
+      margin-top: 10px;
+      color: #000;
+    }
+    .split {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 35px;
+      align-items: center;
+    }
+    .split img {
+      width: 100%;
+      border-radius: 24px;
+      box-shadow: 0 14px 40px rgba(0,0,0,.12);
+    }
+    .features {
+      background: #f5f5f5;
+    }
+    .feature-box {
+      background: white;
+      border-radius: 18px;
+      padding: 24px;
+      border: 1px solid #eee;
+    }
+    .reserve {
+      background: #000;
+      color: white;
+    }
+    form {
+      max-width: 850px;
+      margin: 30px auto 0;
+      background: white;
+      color: #111;
+      padding: 30px;
+      border-radius: 24px;
+    }
+    label {
+      font-weight: 700;
+      display: block;
+      margin: 16px 0 6px;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      font-size: 16px;
+    }
+    textarea { min-height: 120px; }
+    button {
+      width: 100%;
+      margin-top: 20px;
+      padding: 16px;
+      border: 0;
+      border-radius: 999px;
+      background: #000;
+      color: white;
+      font-weight: 900;
+      font-size: 17px;
+      cursor: pointer;
+    }
+    .note {
+      font-size: 14px;
+      color: #666;
+      margin-top: 12px;
+    }
+    footer {
+      background: #111;
+      color: white;
+      text-align: center;
+      padding: 35px 7%;
+    }
+    @media (max-width: 720px) {
+      header { display: block; text-align: center; }
+      nav { margin-top: 10px; }
+      nav a { margin: 0 8px; font-size: 14px; }
+      .hero { text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Swift Rentals</div>
+  <nav>
+    <a href="#cars">Cars</a>
+    <a href="#boats">Boats</a>
+    <a href="#reserve">Reserve</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-content">
+    <h1>Cars & Boats On Demand</h1>
+    <p>Daily and weekly rentals with fast booking, delivery options, and clean reliable vehicles for Miami, Fort Lauderdale, Hollywood, Homestead, and surrounding areas.</p>
+    <a class="btn" href="#reserve">Reserve Now</a>
+    <a class="btn dark" href="sms:+10000000000">Text Us</a>
+  </div>
+</section>
+
+<section class="center" id="cars">
+  <h2>Car Rentals</h2>
+  <p class="sub">Choose from fuel-efficient sedans, comfortable SUVs, premium electric vehicles, and similar options depending on availability.</p>
+
+  <div class="grid">
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1619767886558-efdc259cde1a?auto=format&fit=crop&w=900&q=80" alt="Sedan rental">
+      <div class="card-body">
+        <h3>Altima Sedan</h3>
+        <p>Clean, affordable, fuel-efficient sedan for daily or weekly use.</p>
+        <div class="price">Starting at $75/day or $500/week</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=900&q=80" alt="Hyundai Tucson SUV rental">
+      <div class="card-body">
+        <h3>Hyundai Tucson</h3>
+        <p>Comfortable SUV for family, travel, errands, and longer rentals.</p>
+        <div class="price">Starting at $80/day or $530/week</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=900&q=80" alt="Volkswagen Tiguan SUV rental">
+      <div class="card-body">
+        <h3>Volkswagen Tiguan</h3>
+        <p>Spacious SUV with a smooth ride and flexible rental options.</p>
+        <div class="price">SUV pricing varies by availability</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?auto=format&fit=crop&w=900&q=80" alt="Kia Sportage SUV rental">
+      <div class="card-body">
+        <h3>Kia Sportage</h3>
+        <p>Modern SUV option, great for families, rideshare-style needs, or travel.</p>
+        <div class="price">Starting at $80/day or $530/week</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=900&q=80" alt="Tesla Model 3 rental">
+      <div class="card-body">
+        <h3>Tesla Model 3</h3>
+        <p>Premium electric rental option when available.</p>
+        <div class="price">Premium pricing varies</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=900&q=80" alt="Similar cars rental">
+      <div class="card-body">
+        <h3>Similar Cars Available</h3>
+        <p>Other sedans and SUVs may be available depending on schedule.</p>
+        <div class="price">Message for current availability</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="boats">
+  <div class="split">
+    <div>
+      <h2>Boat Rentals</h2>
+      <p>Enjoy a spacious Hurricane Sundeck-style boat, perfect for family outings, friends, beach days, and celebrations.</p>
+      <p>✔ Up to 8 passengers</p>
+      <p>✔ Cooler included</p>
+      <p>✔ Bluetooth speaker available</p>
+      <p>✔ Miami, Hollywood, and Fort Lauderdale area</p>
+      <a class="btn dark" href="#reserve">Reserve Boat</a>
+    </div>
+    <img src="https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?auto=format&fit=crop&w=1200&q=80" alt="Boat rental">
+  </div>
+</section>
+
+<section class="features center">
+  <h2>Why Choose Swift Rentals?</h2>
+  <p class="sub">Fast booking, flexible rental options, and rentals made simple.</p>
+  <div class="grid">
+    <div class="feature-box">✅ Same-day rentals available</div>
+    <div class="feature-box">✅ Delivery and pickup options</div>
+    <div class="feature-box">✅ Daily and weekly pricing</div>
+    <div class="feature-box">✅ Cars, SUVs, Tesla, and boats</div>
+  </div>
+</section>
+
+<section class="reserve center" id="reserve">
+  <h2>Reserve Your Rental</h2>
+  <p>Fill out the form below and we’ll confirm availability shortly.</p>
+
+  <!-- OPTION 1: Simple form opens email app -->
+  <form action="mailto:goswift24@gmail.com" method="post" enctype="text/plain">
+    <label>Full Name</label>
+    <input type="text" name="Full Name" required>
+
+    <label>Phone Number</label>
+    <input type="tel" name="Phone Number" required>
+
+    <label>Email</label>
+    <input type="email" name="Email">
+
+    <label>Rental Type</label>
+    <select name="Rental Type" required>
+      <option value="">Select one</option>
+      <option>Car Rental</option>
+      <option>Boat Rental</option>
+    </select>
+
+    <label>Vehicle or Boat Preference</label>
+    <select name="Preference">
+      <option value="">Select one</option>
+      <option>Altima Sedan</option>
+      <option>Hyundai Tucson</option>
+      <option>Volkswagen Tiguan</option>
+      <option>Kia Sportage</option>
+      <option>Tesla Model 3</option>
+      <option>Hurricane Sundeck Boat</option>
+      <option>Similar Vehicle</option>
+    </select>
+
+    <label>Start Date</label>
+    <input type="date" name="Start Date" required>
+
+    <label>End Date</label>
+    <input type="date" name="End Date" required>
+
+    <label>Delivery Needed?</label>
+    <select name="Delivery Needed">
+      <option>No</option>
+      <option>Yes</option>
+    </select>
+
+    <label>Pickup / Delivery Location</label>
+    <input type="text" name="Location">
+
+    <label>Notes</label>
+    <textarea name="Notes" placeholder="Tell us anything important about your reservation..."></textarea>
+
+    <button type="submit">Submit Reservation Request</button>
+    <p class="note">You can replace this form later with Tally, Google Forms, or Zapier for automatic tracking.</p>
+  </form>
+</section>
+
+<section class="center" id="contact">
+  <h2>Contact Swift Rentals</h2>
+  <p>📍 Serving Miami, Fort Lauderdale, Hollywood, Homestead, and surrounding areas</p>
+  <p>📱 Fast replies within 2–5 minutes</p>
+  <p><strong>Cars + Boats available by reservation</strong></p>
+  <a class="btn dark" href="tel:+10000000000">Call Now</a>
+  <a class="btn dark" href="sms:+10000000000">Text Now</a>
+</section>
+
+<footer>
+  <p>© 2026 Swift Rentals. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
