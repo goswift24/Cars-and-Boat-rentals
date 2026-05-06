@@ -295,15 +295,10 @@
       <option value="boat">Boat Rental</option>
     </select>
 
-    <label>Vehicle Class or Boat </label>
-    <select name="Preference">
-      <option value="">Select one</option>
-      <option>FULL SIZE SEDAN</option>
-      <option>FULL SIZE SUV</option>
-      <option>EXECUTIVE VEHICLE</option>
-      <option>ELECTRIC VEHICLE</option>
-      <option>HURRICANE BOAT</option>
-    </select>
+    <label>Vehicle or Boat Preference</label>
+<select name="Preference" id="preference" required>
+  <option value="">Select rental type first</option>
+</select>
 
     <label>Start Date</label>
     <input type="date" name="Start Date" required>
@@ -341,5 +336,39 @@
   <p>© 2026 Swift Rentals. All rights reserved.</p>
 </footer>
 
+<script>
+  const rentalType = document.getElementById("rentalType");
+  const preference = document.getElementById("preference");
+
+  const options = {
+    car: [
+      "Full Size Sedan",
+      "Full Size SUV",
+      "Executive Vehicle",
+      "Electric Vehicle"
+    ],
+    boat: [
+      "Hurricane Boat"
+    ]
+  };
+
+  rentalType.addEventListener("change", function () {
+    preference.innerHTML = "";
+
+    const defaultOption = document.createElement("option");
+    defaultOption.value = "";
+    defaultOption.textContent = "Select one";
+    preference.appendChild(defaultOption);
+
+    if (options[this.value]) {
+      options[this.value].forEach(function (item) {
+        const option = document.createElement("option");
+        option.value = item;
+        option.textContent = item;
+        preference.appendChild(option);
+      });
+    }
+  });
+</script>
 </body>
 </html>
