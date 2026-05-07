@@ -276,29 +276,9 @@
 <section class="reserve center" id="reserve">
   <h2>Reserve Your Rental</h2>
   <p>Fill out the form below and we’ll confirm availability shortly.</p>
-  <div style="max-width:850px; margin:25px auto; background:white; color:black; padding:25px; border-radius:20px;">
-    
-    <h3 style="margin-top:0;">🔒 Secure Your Booking</h3>
-
-    <p>
-      To secure your booking, please submit your reservation first, then pay your deposit below.
-    </p>
-
-    <a class="btn dark"
-       href="https://buy.stripe.com/00wfZ9ai83Aj7TU4Bc2sM00"
-       target="_blank"
-       style="display:inline-block; margin-top:10px;">
-       Pay Booking Deposit – $200
-    </a>
-
-    <p style="font-size:14px; margin-top:12px; color:#666;">
-      Secure payments powered by Stripe
-    </p>
-
-  </div>
-
+  
   <!-- OPTION 1: Simple form opens email app -->
-  <form action="mailto:goswift24@gmail.com" method="post" enctype="text/plain">
+  <form id="reservationForm">
     <label>Full Name</label>
     <input type="text" name="Full Name" required>
 
@@ -341,6 +321,25 @@
     <button type="submit">Submit Reservation Request</button>
     <p class="note">You can replace this form later with Tally, Google Forms, or Zapier for automatic tracking.</p>
   </form>
+  <div id="depositStep" style="display:none; max-width:850px; margin:25px auto; background:white; color:black; padding:30px; border-radius:20px;">
+  <h3>✅ Reservation Request Received</h3>
+
+  <p>
+    Thank you. Your reservation request has been prepared. Please pay your booking deposit below to secure your rental.
+  </p>
+
+  <a class="btn dark"
+     href="https://buy.stripe.com/00wfZ9ai83Aj7TU4Bc2sM00"
+     target="_blank"
+     style="display:inline-block; margin-top:10px;">
+     Pay Booking Deposit – $200
+  </a>
+
+  <p style="font-size:14px; margin-top:12px; color:#666;">
+    Secure payments powered by Stripe
+  </p>
+</div>
+  
 </section>
 
 <section class="center" id="contact">
@@ -390,5 +389,22 @@
     }
   });
 </script>
+<script>
+  document.getElementById("reservationForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    let emailBody = "New Swift Rentals Reservation:%0D%0A%0D%0A";
+
+    for (let [key, value] of formData.entries()) {
+      emailBody += key + ": " + value + "%0D%0A";
+    }
+
+    window.location.href = "mailto:goswift24@gmail.com?subject=New Rental Reservation&body=" + emailBody;
+
+    this.style.display = "none";
+    document.getElementById("depositStep").style.display = "block";
+  });
+</script>  
 </body>
 </html>
