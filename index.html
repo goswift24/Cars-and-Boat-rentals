@@ -390,8 +390,18 @@
   });
 </script>
 <script>
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxKQiPZrk3ZlFwPKZiJLSiTPMJ4bHKAgOQ3KFkpBBq9eXCR95J_GK0IUdTbveMvzaA/exec";
+
   document.getElementById("reservationForm").addEventListener("submit", function(e) {
     e.preventDefault();
+
+    const formData = new FormData(this);
+
+    fetch(GOOGLE_SCRIPT_URL, {
+      method: "POST",
+      body: formData,
+      mode: "no-cors"
+    });
 
     this.style.display = "none";
     document.getElementById("depositStep").style.display = "block";
