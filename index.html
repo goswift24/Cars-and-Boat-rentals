@@ -393,18 +393,14 @@
   document.getElementById("reservationForm").addEventListener("submit", function(e) {
     e.preventDefault();
 
-    const formData = new FormData(this);
-    let emailBody = "New Swift Rentals Reservation:%0D%0A%0D%0A";
-
-    for (let [key, value] of formData.entries()) {
-      emailBody += key + ": " + value + "%0D%0A";
-    }
-
-    window.location.href = "mailto:goswift24@gmail.com?subject=New Rental Reservation&body=" + emailBody;
-
     this.style.display = "none";
     document.getElementById("depositStep").style.display = "block";
+
+    window.scrollTo({
+      top: document.getElementById("depositStep").offsetTop - 80,
+      behavior: "smooth"
+    });
   });
-</script>  
+</script> 
 </body>
 </html>
