@@ -359,95 +359,120 @@
 </footer>
 
 <script>
-  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxKQiPZrk3ZlFwPKZiJLSiTPMJ4bHKAgOQ3KFkpBBq9eXCR95J_GK0IUdTbveMvzaA/exec";
+  const AVAILABILITY_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxKQiPZrk3ZlFwPKZiJLSiTPMJ4bHKAgOQ3KFkpBBq9eXCR95J_GK0IUdTbveMvzaA/exec";
 
   const rentalType = document.getElementById("rentalType");
   const preference = document.getElementById("preference");
   const vehicleDetails = document.getElementById("vehicleDetails");
   const priceEstimate = document.getElementById("priceEstimate");
+  const startDateInput = document.querySelector('input[name="Start Date"]');
+  const endDateInput = document.querySelector('input[name="End Date"]');
 
   let vehicles = [];
 
-  function loadVehicles(data) {
+  function loadAvailableVehicles(data) {
     vehicles = data;
+    populateVehicleClassDropdown();
   }
 
-  const script = document.createElement("script");
-  script.src = GOOGLE_SCRIPT_URL + "?callback=loadVehicles";
-  document.body.appendChild(script);
+  function getAvailableVehicles() {
+    if (!startDateInput.value || !endDateInput.value || !rentalType.value) {
+      preference.innerHTML = '<option value="">Select dates and rental type first</option>';
+      return;
+    }
 
-  rentalType.addEventListener("change", function () {
+    const oldScript = document.getElementById("availabilityScript");
+    if (oldScript) oldScript.remove();
+
+    const script = document.createElement("script");
+    script.id = "availabilityScript";
+    script.src = AVAILABILITY_SCRIPT_URL +
+      "?callback=loadAvailableVehicles" +
+      "&start=" + encodeURIComponent(startDateInput.value) +
+      "&end=" + encodeURIComponent(endDateInput.value);
+
+    document.body.appendChild(script);
+  }
+
+  function normalizeType(type) {
+    type = String(type || "").trim().toUpperCase();
+
+    if (type.includes("SEDAN")) return "Full Size Sedan";
+    if (type.includes("SUV")) return "Full Size SUV";
+    if (type.includes("EXECUTIVE")) return "Executive Vehicles";
+    if (type.includes("ELECTRIC")) return "Electric Vehicle";
+    if (type.includes("BOAT")) return "Hurricane Boat";
+
+    return type;
+  }
+
+  function populateVehicleClassDropdown() {
     preference.innerHTML = '<option value="">Select one</option>';
     vehicleDetails.innerHTML = "";
     priceEstimate.innerHTML = "";
 
-    const selectedType = this.value === "car"
-  ? [
-      "Full Size Sedan",
-      "FULL SIZE SEDAN",
-      "Full Size SUV",
-      "FULL SIZE SUV",
-      "Executive Vehicle",
-      "EXECUTIVE VEHICLE",
-      "Executive Vehicles",
-      "EXECUTIVE VEHICLES",
-      "Electric Vehicle",
-      "ELECTRIC VEHICLE",
-      "Electric Vehicles",
-      "ELECTRIC VEHICLES"
-    ]
-  : [
-      "Hurricane Boat",
-      "HURRICANE BOAT",
-      "Hurricane Sundeck Boat"
-    ];
+    const allowedTypes = rentalType.value === "car"
+      ? ["Full Size Sedan", "Full Size SUV", "Executive Vehicles", "Electric Vehicle"]
+      : ["Hurricane Boat"];
 
-    vehicles
-      .filter(v => selectedType.includes(v.type))
-      .forEach(v => {
-        const option = document.createElement("option");
+    const grouped = {};
 
-        option.value = v.name;
-        option.textContent = v.name + " - $" + v.dailyRate + "/day";
+    vehicles.forEach(v => {
+      const type = normalizeType(v.type);
 
-        option.dataset.dailyRate = v.dailyRate;
-        option.dataset.weeklyRate = v.weeklyRate;
-        option.dataset.pickup = v.pickup;
+      if (!allowedTypes.includes(type)) return;
 
-        preference.appendChild(option);
-      });
-  });
+      if (!grouped[type]) {
+        grouped[type] = {
+          type: type,
+          dailyRate: v.dailyRate,
+          weeklyRate: v.weeklyRate,
+          pickup: v.pickup,
+          names: []
+        };
+      }
+
+      grouped[type].names.push(v.name);
+    });
+
+    Object.values(grouped).forEach(group => {
+      const option = document.createElement("option");
+
+      option.value = group.type;
+      option.textContent = group.type + " - $" + group.dailyRate + "/day";
+
+      option.dataset.dailyRate = group.dailyRate;
+      option.dataset.weeklyRate = group.weeklyRate;
+      option.dataset.pickup = group.pickup;
+      option.dataset.names = group.names.join(", ");
+
+      preference.appendChild(option);
+    });
+
+    if (preference.options.length === 1) {
+      const option = document.createElement("option");
+      option.value = "";
+      option.textContent = "No rentals available for these dates";
+      preference.appendChild(option);
+    }
+  }
+
+  rentalType.addEventListener("change", getAvailableVehicles);
+  startDateInput.addEventListener("change", getAvailableVehicles);
+  endDateInput.addEventListener("change", getAvailableVehicles);
 
   preference.addEventListener("change", function () {
     const selected = this.options[this.selectedIndex];
 
     if (!selected.value) return;
 
-    vehicleDetails.innerHTML = "📍 Pickup Location: " + selected.dataset.pickup;
-    priceEstimate.innerHTML = "💲 Daily Rate: $" + selected.dataset.dailyRate;
-  });
-</script>
-<script>
-  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxKQiPZrk3ZlFwPKZiJLSiTPMJ4bHKAgOQ3KFkpBBq9eXCR95J_GK0IUdTbveMvzaA/exec";
+    vehicleDetails.innerHTML =
+      "📍 Pickup Location: " + selected.dataset.pickup +
+      "<br>🚘 Vehicles in this class: " + selected.dataset.names + ", or similar";
 
-  document.getElementById("reservationForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-
-    const formData = new FormData(this);
-
-    fetch(GOOGLE_SCRIPT_URL, {
-      method: "POST",
-      body: formData,
-      mode: "no-cors"
-    });
-
-    this.style.display = "none";
-    document.getElementById("depositStep").style.display = "block";
-
-    window.scrollTo({
-      top: document.getElementById("depositStep").offsetTop - 80,
-      behavior: "smooth"
-    });
+    priceEstimate.innerHTML =
+      "💲 Daily Rate: $" + selected.dataset.dailyRate +
+      "<br>💲 Weekly Rate: $" + selected.dataset.weeklyRate;
   });
 </script> 
 </body>
