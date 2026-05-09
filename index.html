@@ -368,11 +368,13 @@
 
   let vehicles = [];
 
-  fetch(GOOGLE_SCRIPT_URL)
-    .then(response => response.json())
-    .then(data => {
-      vehicles = data;
-    });
+  function loadVehicles(data) {
+    vehicles = data;
+  }
+
+  const script = document.createElement("script");
+  script.src = GOOGLE_SCRIPT_URL + "?callback=loadVehicles";
+  document.body.appendChild(script);
 
   rentalType.addEventListener("change", function () {
     preference.innerHTML = '<option value="">Select one</option>';
@@ -380,8 +382,8 @@
     priceEstimate.innerHTML = "";
 
     const selectedType = this.value === "car"
-      ? ["Full Size Sedan", "Full Size SUV", "Executive Vehicles", "Electric Vehicle"]
-      : ["Hurricane Boat"];
+      ? ["Full Size Sedan", "Full Size SUV", "Full Size SUVs", "Executive Vehicle", "Executive Vehicles", "Electric Vehicle", "Electric Vehicles"]
+      : ["Hurricane Boat", "Hurricane Sundeck Boat"];
 
     vehicles
       .filter(v => selectedType.includes(v.type))
@@ -404,11 +406,8 @@
 
     if (!selected.value) return;
 
-    vehicleDetails.innerHTML =
-      "📍 Pickup Location: " + selected.dataset.pickup;
-
-    priceEstimate.innerHTML =
-      "💲 Daily Rate: $" + selected.dataset.dailyRate;
+    vehicleDetails.innerHTML = "📍 Pickup Location: " + selected.dataset.pickup;
+    priceEstimate.innerHTML = "💲 Daily Rate: $" + selected.dataset.dailyRate;
   });
 </script>
 <script>
