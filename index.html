@@ -382,8 +382,25 @@
     priceEstimate.innerHTML = "";
 
     const selectedType = this.value === "car"
-      ? ["Full Size Sedan", "Full Size SUV", "Full Size SUVs", "Executive Vehicle", "Executive Vehicles", "Electric Vehicle", "Electric Vehicles"]
-      : ["Hurricane Boat", "Hurricane Sundeck Boat"];
+  ? [
+      "Full Size Sedan",
+      "FULL SIZE SEDAN",
+      "Full Size SUV",
+      "FULL SIZE SUV",
+      "Executive Vehicle",
+      "EXECUTIVE VEHICLE",
+      "Executive Vehicles",
+      "EXECUTIVE VEHICLES",
+      "Electric Vehicle",
+      "ELECTRIC VEHICLE",
+      "Electric Vehicles",
+      "ELECTRIC VEHICLES"
+    ]
+  : [
+      "Hurricane Boat",
+      "HURRICANE BOAT",
+      "Hurricane Sundeck Boat"
+    ];
 
     vehicles
       .filter(v => selectedType.includes(v.type))
