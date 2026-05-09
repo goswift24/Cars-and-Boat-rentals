@@ -295,10 +295,13 @@
       <option value="boat">Boat Rental</option>
     </select>
 
-    <label>Vehicle or Boat Preference</label>
+    <label>Available Vehicle / Boat</label>
 <select name="Preference" id="preference" required>
-  <option value="">Select rental type first</option>
+  <option value="">Select dates and rental type first</option>
 </select>
+
+<div id="vehicleDetails" style="margin-top:15px; font-weight:700;"></div>
+<div id="priceEstimate" style="margin-top:10px; font-size:18px; font-weight:900;"></div>
 
     <label>Start Date</label>
     <input type="date" name="Start Date" required>
@@ -356,37 +359,56 @@
 </footer>
 
 <script>
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxKQiPZrk3ZlFwPKZiJLSiTPMJ4bHKAgOQ3KFkpBBq9eXCR95J_GK0IUdTbveMvzaA/exec";
+
   const rentalType = document.getElementById("rentalType");
   const preference = document.getElementById("preference");
+  const vehicleDetails = document.getElementById("vehicleDetails");
+  const priceEstimate = document.getElementById("priceEstimate");
 
-  const options = {
-    car: [
-      "Full Size Sedan",
-      "Full Size SUV",
-      "Executive Vehicle",
-      "Electric Vehicle"
-    ],
-    boat: [
-      "Hurricane Boat"
-    ]
-  };
+  let vehicles = [];
+
+  fetch(GOOGLE_SCRIPT_URL)
+    .then(response => response.json())
+    .then(data => {
+      vehicles = data;
+    });
 
   rentalType.addEventListener("change", function () {
-    preference.innerHTML = "";
+    preference.innerHTML = '<option value="">Select one</option>';
+    vehicleDetails.innerHTML = "";
+    priceEstimate.innerHTML = "";
 
-    const defaultOption = document.createElement("option");
-    defaultOption.value = "";
-    defaultOption.textContent = "Select one";
-    preference.appendChild(defaultOption);
+    const selectedType = this.value === "car"
+      ? ["Full Size Sedan", "Full Size SUV", "Executive Vehicles", "Electric Vehicle"]
+      : ["Hurricane Boat"];
 
-    if (options[this.value]) {
-      options[this.value].forEach(function (item) {
+    vehicles
+      .filter(v => selectedType.includes(v.type))
+      .forEach(v => {
         const option = document.createElement("option");
-        option.value = item;
-        option.textContent = item;
+
+        option.value = v.name;
+        option.textContent = v.name + " - $" + v.dailyRate + "/day";
+
+        option.dataset.dailyRate = v.dailyRate;
+        option.dataset.weeklyRate = v.weeklyRate;
+        option.dataset.pickup = v.pickup;
+
         preference.appendChild(option);
       });
-    }
+  });
+
+  preference.addEventListener("change", function () {
+    const selected = this.options[this.selectedIndex];
+
+    if (!selected.value) return;
+
+    vehicleDetails.innerHTML =
+      "📍 Pickup Location: " + selected.dataset.pickup;
+
+    priceEstimate.innerHTML =
+      "💲 Daily Rate: $" + selected.dataset.dailyRate;
   });
 </script>
 <script>
