@@ -484,6 +484,13 @@ preference.addEventListener("focus", refreshVehiclesFast);
       "💲 Daily Rate: $" + selected.dataset.dailyRate +
       "<br>💲 Weekly Rate: $" + selected.dataset.weeklyRate;
   });
+  startDateInput.addEventListener("change", function () {
+    this.blur();
+});
+
+endDateInput.addEventListener("change", function () {
+    this.blur();
+});
 </script> 
 </body>
 </html>
