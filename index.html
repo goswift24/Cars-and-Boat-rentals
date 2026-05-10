@@ -457,9 +457,19 @@
     }
   }
 
-  rentalType.addEventListener("change", getAvailableVehicles);
-  startDateInput.addEventListener("change", getAvailableVehicles);
-  endDateInput.addEventListener("change", getAvailableVehicles);
+  function refreshVehiclesFast() {
+  getAvailableVehicles();
+
+  setTimeout(function () {
+    populateVehicleClassDropdown();
+  }, 300);
+}
+
+rentalType.addEventListener("change", refreshVehiclesFast);
+startDateInput.addEventListener("change", refreshVehiclesFast);
+endDateInput.addEventListener("change", refreshVehiclesFast);
+preference.addEventListener("mousedown", refreshVehiclesFast);
+preference.addEventListener("focus", refreshVehiclesFast);
 
   preference.addEventListener("change", function () {
     const selected = this.options[this.selectedIndex];
