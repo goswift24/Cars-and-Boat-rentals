@@ -178,7 +178,7 @@
     }
   </style>
 </head>
-<body>
+<body> tabindex="-1"> 
 
 <header>
   <div class="logo">Swift Rentals</div>
@@ -485,12 +485,19 @@ preference.addEventListener("focus", refreshVehiclesFast);
       "<br>💲 Weekly Rate: $" + selected.dataset.weeklyRate;
   });
   startDateInput.addEventListener("change", function () {
+  setTimeout(() => {
     this.blur();
+    document.body.focus();
+  }, 100);
 });
 
 endDateInput.addEventListener("change", function () {
+  setTimeout(() => {
     this.blur();
+    document.body.focus();
+  }, 100);
 });
+
 </script> 
 </body>
 </html>
