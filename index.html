@@ -498,6 +498,19 @@ endDateInput.addEventListener("change", function () {
   }, 100);
 });
 
+document.getElementById("reservationForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const formData = new FormData(this);
+
+  fetch(AVAILABILITY_SCRIPT_URL, {
+    method: "POST",
+    body: formData,
+    mode: "no-cors"
+  });
+
+  window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLSeEqUn2IlGHgNto1flejFnhrJgk-e7Fpf8ZSx9_eKhHAx8ILg/viewform";
+});
 </script> 
 </body>
 </html>
