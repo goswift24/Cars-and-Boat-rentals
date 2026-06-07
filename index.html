@@ -507,6 +507,16 @@ document.getElementById("reservationForm").addEventListener("submit", async func
     mode: "no-cors"
   });
 
+sessionStorage.setItem("swiftReservation", JSON.stringify({
+  fullName: formData.get("Full Name"),
+  phone: formData.get("Phone Number"),
+  email: formData.get("Email"),
+  rentalType: formData.get("Rental Type"),
+  preference: formData.get("Preference"),
+  startDate: formData.get("Start Date"),
+  endDate: formData.get("End Date")
+}));
+  
   setTimeout(function () {
     window.location.href =
   "https://docs.google.com/forms/d/e/1FAIpQLSeEqUn2IlGHgNto1flejFnhrJgk-e7Fpf8ZSx9_eKhHAx8ILg/viewform?usp=pp_url"
