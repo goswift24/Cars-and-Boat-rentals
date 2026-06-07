@@ -5,52 +5,47 @@
   <title>Swift Rentals Payment</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      padding: 30px;
-      color: #111;
-    }
-    .box {
-      max-width: 700px;
-      margin: auto;
-      background: white;
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.08);
-    }
-    h1 { margin-top: 0; }
-    .btn {
-      display: block;
-      text-align: center;
-      background: #000;
-      color: white;
-      padding: 16px;
-      border-radius: 12px;
-      text-decoration: none;
-      font-weight: 800;
-      margin: 15px 0;
-    }
-    .option {
-      background: #f1f1f1;
-      padding: 18px;
-      border-radius: 14px;
-      margin: 15px 0;
-    }
+    body { font-family: Arial, sans-serif; background:#f5f5f5; padding:25px; color:#111; }
+    .box { max-width:750px; margin:auto; background:white; padding:30px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.08); }
+    label { font-weight:700; display:block; margin-top:15px; }
+    input, select { width:100%; padding:14px; border:1px solid #ccc; border-radius:10px; font-size:16px; }
+    .result { background:#f1f1f1; padding:20px; border-radius:15px; margin-top:20px; font-size:18px; }
+    .btn { display:block; text-align:center; background:#000; color:white; padding:16px; border-radius:12px; text-decoration:none; font-weight:800; margin:15px 0; }
+    .option { background:#f8f8f8; padding:18px; border-radius:14px; margin:15px 0; }
   </style>
 </head>
 <body>
 
 <div class="box">
   <h1>Swift Rentals Payment</h1>
+  <p>Calculate your rental total and choose your payment method.</p>
 
-  <p>Thank you for completing your reservation steps. Please choose how you would like to pay.</p>
+  <label>Rental Type</label>
+  <select id="rentalType">
+    <option value="car">Car Rental</option>
+    <option value="boat">Boat Rental</option>
+  </select>
+
+  <label>Daily Rate</label>
+  <input type="number" id="dailyRate" placeholder="Example: 75">
+
+  <label>Start Date</label>
+  <input type="date" id="startDate">
+
+  <label>End Date</label>
+  <input type="date" id="endDate">
+
+  <button class="btn" onclick="calculateTotal()">Calculate Total</button>
+
+  <div class="result" id="result">
+    Enter rental details to calculate total.
+  </div>
 
   <div class="option">
-    <h3>Car Rental Deposit</h3>
-    <p>A <strong>$200 booking deposit</strong> is required for car rentals and is credited toward your total.</p>
+    <h3>Debit / Credit Card</h3>
+    <p>For car rentals, a <strong>$200 deposit</strong> is required and credited toward your total.</p>
     <a class="btn" href="https://buy.stripe.com/00w00keou5FO22Q1iL3oA03" target="_blank">
-      Pay $200 Deposit with Debit/Credit Card
+      Pay $200 Car Deposit
     </a>
   </div>
 
@@ -67,12 +62,37 @@
   </div>
 
   <div class="option">
-    <h3>Pay Later / Cash</h3>
+    <h3>Cash / Pay Later</h3>
     <p>You may also pay later in person by cash, Zelle, Cash App, debit, or credit card.</p>
   </div>
-
-  <p><strong>Boat Rentals:</strong> No deposit is required when Swift Rentals provides the captain.</p>
 </div>
+
+<script>
+function calculateTotal() {
+  const rentalType = document.getElementById("rentalType").value;
+  const dailyRate = Number(document.getElementById("dailyRate").value);
+  const start = new Date(document.getElementById("startDate").value);
+  const end = new Date(document.getElementById("endDate").value);
+
+  if (!dailyRate || !start || !end || end < start) {
+    document.getElementById("result").innerHTML = "Please enter a valid rate and date range.";
+    return;
+  }
+
+  const oneDay = 1000 * 60 * 60 * 24;
+  const days = Math.ceil((end - start) / oneDay) + 1;
+  const total = days * dailyRate;
+  const deposit = rentalType === "car" ? 200 : 0;
+  const remaining = total - deposit;
+
+  document.getElementById("result").innerHTML =
+    "<strong>Rental Days:</strong> " + days + "<br>" +
+    "<strong>Daily Rate:</strong> $" + dailyRate + "<br>" +
+    "<strong>Rental Total:</strong> $" + total + "<br>" +
+    "<strong>Deposit Due Today:</strong> $" + deposit + "<br>" +
+    "<strong>Remaining Balance:</strong> $" + remaining;
+}
+</script>
 
 </body>
 </html>
