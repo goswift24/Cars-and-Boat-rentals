@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Swift Rentals Vehicle Use Agreement</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: Arial, sans-serif; background:#f5f5f5; padding:25px; color:#111; }
+    .box { max-width:900px; margin:auto; background:white; padding:30px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.08); }
+    h1, h2 { margin-top:0; }
+    label { display:block; font-weight:700; margin-top:15px; }
+    input { width:100%; padding:13px; border:1px solid #ccc; border-radius:10px; font-size:16px; }
+    .terms { background:#f7f7f7; padding:20px; border-radius:14px; margin-top:20px; max-height:420px; overflow:auto; }
+    .btn { width:100%; background:#000; color:white; padding:16px; border:0; border-radius:12px; font-weight:900; font-size:17px; margin-top:20px; cursor:pointer; }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h1>Swift Rentals Vehicle Use Agreement</h1>
+
+  <h2>Driver Information</h2>
+
+  <label>Full Name</label>
+  <input id="fullName" readonly>
+
+  <label>Phone Number</label>
+  <input id="phone" readonly>
+
+  <label>Email</label>
+  <input id="email" readonly>
+
+  <label>Rental Type</label>
+  <input id="rentalType" readonly>
+
+  <label>Vehicle / Class</label>
+  <input id="preference" readonly>
+
+  <label>Date Out</label>
+  <input id="startDate" readonly>
+
+  <label>Date Due</label>
+  <input id="endDate" readonly>
+
+  <div class="terms">
+    <h2>SWIFT RENTALS LLC – VEHICLE USE AGREEMENT</h2>
+
+    <p>This Vehicle Use Agreement is entered into between Swift Rentals LLC and the undersigned authorized individual. By signing below, the Driver agrees to all terms and conditions herein.</p>
+
+    <h3>1. Vehicle Authorization & Purpose</h3>
+    <p>The Driver is authorized to use the vehicle specified by Swift Rentals LLC to carry out their own business or personal activities, without restriction on mileage or the nature of such activities.</p>
+
+    <h3>2. Vehicle Condition</h3>
+    <p>The Driver has thoroughly inspected the vehicle prior to rental and confirms that no damage exists, except as specifically noted by Swift Rentals LLC.</p>
+
+    <h3>3. Fuel & Charging Requirements</h3>
+    <p>Gas vehicles must be returned with the same fuel level as pickup. If not, Swift Rentals LLC may charge $6.00 per gallon. Electric vehicles may be charged $0.07 per mile driven to cover battery recharging costs.</p>
+
+    <h3>4. Tolls & Citations</h3>
+    <p>Any tolls incurred during the rental period will be rounded up to the next whole dollar and charged against the Driver’s deposit. Traffic citations and parking tickets are the sole responsibility of the Driver.</p>
+
+    <h3>5. Smoking Fee</h3>
+    <p>A non-refundable cleaning fee of $125.00 will be charged if smoking occurs inside the rental vehicle.</p>
+
+    <h3>6. Damage & Liability</h3>
+    <p>If the vehicle is returned with damage, the Driver may forfeit their deposit. The Driver is financially responsible for damages, repair costs, diminished value, towing, storage, and related losses if at fault.</p>
+
+    <h3>7. Key / Key Fob Replacement</h3>
+    <p>If the vehicle keys or key fob are lost, the Driver authorizes Swift Rentals LLC to charge $250.00.</p>
+
+    <h3>8. Return Date & Late Policy</h3>
+    <p>The Driver agrees to return the vehicle on or before the scheduled return date and time. Failure to return or extend the rental may result in the vehicle being reported stolen, legal action, and forfeiture of deposit.</p>
+
+    <h3>9. Payment Authorization & Refunds</h3>
+    <p>The Driver authorizes Swift Rentals LLC to process the rental amount, applicable fees, and deposit charges using the payment method provided. Deposit refunds may take 7–10 business days.</p>
+
+    <h3>10. Non-Dispute Agreement</h3>
+    <p>The Driver acknowledges and agrees that by accepting these terms, they waive the right to dispute charges processed under this Agreement, which is considered legally binding.</p>
+  </div>
+
+  <label>
+    <input type="checkbox" id="agree" style="width:auto;"> I have read and agree to all terms of this Vehicle Use Agreement.
+  </label>
+
+  <label>Electronic Signature</label>
+  <input id="signature" placeholder="Type your full legal name">
+
+  <button class="btn" onclick="submitContract()">Submit Agreement</button>
+</div>
+
+<script>
+  const reservation = JSON.parse(sessionStorage.getItem("swiftReservation") || "{}");
+
+  document.getElementById("fullName").value = reservation.fullName || "";
+  document.getElementById("phone").value = reservation.phone || "";
+  document.getElementById("email").value = reservation.email || "";
+  document.getElementById("rentalType").value = reservation.rentalType || "";
+  document.getElementById("preference").value = reservation.preference || "";
+  document.getElementById("startDate").value = reservation.startDate || "";
+  document.getElementById("endDate").value = reservation.endDate || "";
+
+  function submitContract() {
+    if (!document.getElementById("agree").checked) {
+      alert("Please agree to the terms before continuing.");
+      return;
+    }
+
+    if (!document.getElementById("signature").value.trim()) {
+      alert("Please type your full legal name as your electronic signature.");
+      return;
+    }
+
+    sessionStorage.setItem("swiftContract", JSON.stringify({
+      ...reservation,
+      signature: document.getElementById("signature").value,
+      signedAt: new Date().toLocaleString()
+    }));
+
+    window.location.href = "payment.html";
+  }
+</script>
+
+</body>
+</html>
