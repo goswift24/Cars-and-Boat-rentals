@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Swift Rentals Driver Verification</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: Arial, sans-serif; background:#f5f5f5; padding:25px; color:#111; }
+    .box { max-width:800px; margin:auto; background:white; padding:30px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.08); }
+    label { display:block; font-weight:700; margin-top:15px; }
+    input, select { width:100%; padding:14px; border:1px solid #ccc; border-radius:10px; font-size:16px; }
+    .btn { width:100%; background:#000; color:white; padding:16px; border:0; border-radius:12px; font-weight:900; font-size:17px; margin-top:20px; cursor:pointer; }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h1>Driver Verification</h1>
+  <p>Please complete driver verification before continuing to the rental agreement.</p>
+
+  <label>Full Name</label>
+  <input id="fullName" readonly>
+
+  <label>Phone Number</label>
+  <input id="phone" readonly>
+
+  <label>Email</label>
+  <input id="email" readonly>
+
+  <label>Driver License Number</label>
+  <input id="licenseNumber" required>
+
+  <label>Driver License State</label>
+  <select id="licenseState" required>
+    <option value="">Select state</option>
+    <option>FLORIDA</option>
+    <option>GEORGIA</option>
+    <option>NEW YORK</option>
+    <option>NEW JERSEY</option>
+    <option>TEXAS</option>
+    <option>CALIFORNIA</option>
+    <option>OTHER</option>
+  </select>
+
+  <label>Photo holding driver license in hand</label>
+  <input type="file" id="licenseHand" accept="image/*" required>
+
+  <label>Photo holding driver license next to face</label>
+  <input type="file" id="licenseFace" accept="image/*" required>
+
+  <label>
+    <input type="checkbox" id="certify" style="width:auto;">
+    I certify that this driver license is valid and belongs to me.
+  </label>
+
+  <button class="btn" onclick="submitLicense()">Continue to Rental Agreement</button>
+</div>
+
+<script>
+const UPLOAD_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxZ6v1FB2fJC43cduWKOhmKl2YfjoEWYRRK_vnpE7jDGUKMNxVzPFnNUm5tS5rlN7oMfw/exec";
+
+const reservation = JSON.parse(sessionStorage.getItem("swiftReservation") || "{}");
+
+document.getElementById("fullName").value = reservation.fullName || "";
+document.getElementById("phone").value = reservation.phone || "";
+document.getElementById("email").value = reservation.email || "";
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(",")[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function submitLicense() {
+  if (!document.getElementById("certify").checked) {
+    alert("Please certify that the license belongs to you.");
+    return;
+  }
+
+  const handFile = document.getElementById("licenseHand").files[0];
+  const faceFile = document.getElementById("licenseFace").files[0];
+
+  if (!handFile || !faceFile) {
+    alert("Please upload both required photos.");
+    return;
+  }
+
+  const licenseNumber = document.getElementById("licenseNumber").value.trim();
+  const licenseState = document.getElementById("licenseState").value;
+
+  if (!licenseNumber || !licenseState) {
+    alert("Please enter license number and state.");
+    return;
+  }
+
+  const payload = {
+    fullName: reservation.fullName,
+    phone: reservation.phone,
+    email: reservation.email,
+    licenseNumber: licenseNumber,
+    licenseState: licenseState,
+    files: [
+      {
+        name: "License in Hand - " + handFile.name,
+        mimeType: handFile.type,
+        data: await fileToBase64(handFile)
+      },
+      {
+        name: "License Next to Face - " + faceFile.name,
+        mimeType: faceFile.type,
+        data: await fileToBase64(faceFile)
+      }
+    ]
+  };
+
+  await fetch(UPLOAD_SCRIPT_URL, {
+    method: "POST",
+    body: JSON.stringify(payload),
+    mode: "no-cors"
+  });
+
+  sessionStorage.setItem("swiftLicense", JSON.stringify({
+    licenseNumber: licenseNumber,
+    licenseState: licenseState
+  }));
+
+  window.location.href = "contract.html";
+}
+</script>
+
+</body>
+</html>
