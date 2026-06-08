@@ -115,7 +115,7 @@
     }
 
     const oneDay = 1000 * 60 * 60 * 24;
-    const days = Math.ceil((end - start) / oneDay) + 1;
+    const days = Math.ceil((end - start) / oneDay) ;
     const total = days * dailyRate;
     const deposit = rentalType === "car" ? 200 : 0;
     const remaining = Math.max(total - deposit, 0);
