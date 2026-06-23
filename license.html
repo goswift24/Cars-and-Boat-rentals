@@ -59,7 +59,7 @@
 <script>
 const UPLOAD_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxZ6v1FB2fJC43cduWKOhmKl2YfjoEWYRRK_vnpE7jDGUKMNxVzPFnNUm5tS5rlN7oMfw/exec";
 
-const reservation = JSON.parse(sessionStorage.getItem("swiftReservation") || "{}");
+const reservation = JSON.parse(localStorage.getItem("swiftReservation") || "{}");
 
 document.getElementById("fullName").value = reservation.fullName || "";
 document.getElementById("phone").value = reservation.phone || "";
@@ -122,7 +122,7 @@ async function submitLicense() {
   mode: "no-cors"
 });
 
-sessionStorage.setItem("swiftLicense", JSON.stringify({
+localStorage.setItem("swiftLicense", JSON.stringify({
   licenseNumber: licenseNumber,
   licenseState: licenseState
 }));
