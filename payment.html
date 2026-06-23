@@ -67,9 +67,14 @@
 </div>
 
 <script>
-  const contract =
-  JSON.parse(localStorage.getItem("swiftContract") || "null") ||
-  JSON.parse(localStorage.getItem("swiftReservation") || "{}");
+  const urlParams = new URLSearchParams(window.location.search);
+
+const contract = {
+  rentalType: urlParams.get("rentalType") || "",
+  preference: urlParams.get("preference") || "",
+  startDate: urlParams.get("startDate") || "",
+  endDate: urlParams.get("endDate") || ""
+};
 
   const rates = {
   "Full Size Sedan": { daily: 75, weekly: 490 },
