@@ -96,14 +96,16 @@ const contract = {
     return type;
   }
 
-  const rentalClass = normalizeType(contract.preference || "");
+  const rentalClass = normalizeType(
+  contract.preference || new URLSearchParams(window.location.search).get("preference") || ""
+);
   const rentalType = String(contract.rentalType || "").toLowerCase().includes("boat") ? "boat" : "car";
   const dailyRate = rates[rentalClass] || 0;
 
   document.getElementById("rentalType").value = rentalType;
   document.getElementById("dailyRate").value = dailyRate;
-  document.getElementById("startDate").value = contract.startDate || "";
-  document.getElementById("endDate").value = contract.endDate || "";
+  document.getElementById("startDate").value = contract.startDate || new URLSearchParams(window.location.search).get("startDate") || "";
+document.getElementById("endDate").value = contract.endDate || new URLSearchParams(window.location.search).get("endDate") || "";
 
   setTimeout(function () {
   calculateTotal();
