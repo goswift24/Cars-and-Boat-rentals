@@ -116,7 +116,14 @@
       signedAt: new Date().toLocaleString()
     }));
 
-    window.location.href = "payment.html";
+    const params = new URLSearchParams({
+  rentalType: reservation.rentalType || "",
+  preference: reservation.preference || "",
+  startDate: reservation.startDate || "",
+  endDate: reservation.endDate || ""
+});
+
+window.location.href = "payment.html?" + params.toString();
   }
 </script>
 
