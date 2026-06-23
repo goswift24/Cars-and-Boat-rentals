@@ -89,7 +89,7 @@
 </div>
 
 <script>
-  const reservation = JSON.parse(sessionStorage.getItem("swiftReservation") || "{}");
+  const reservation = JSON.parse(localStorage.getItem("swiftReservation") || "{}");
 
   document.getElementById("fullName").value = reservation.fullName || "";
   document.getElementById("phone").value = reservation.phone || "";
@@ -110,7 +110,7 @@
       return;
     }
 
-    sessionStorage.setItem("swiftContract", JSON.stringify({
+    localStorage.setItem("swiftContract", JSON.stringify({
       ...reservation,
       signature: document.getElementById("signature").value,
       signedAt: new Date().toLocaleString()
