@@ -67,7 +67,7 @@
 </div>
 
 <script>
-  const urlParams = new URLSearchParams(window.location.search);
+const urlParams = new URLSearchParams(window.location.search);
 
 const contract = {
   rentalType: urlParams.get("rentalType") || "",
@@ -76,7 +76,7 @@ const contract = {
   endDate: urlParams.get("endDate") || ""
 };
 
-  const rates = {
+const rates = {
   "Full Size Sedan": { daily: 75, weekly: 490 },
   "Full Size SUV": { daily: 80, weekly: 525 },
   "Executive Vehicles": { daily: 85, weekly: 560 },
@@ -84,67 +84,68 @@ const contract = {
   "Hurricane Boat": { daily: 490, weekly: 0 }
 };
 
-  function normalizeType(type) {
-    type = String(type || "").toUpperCase();
+function normalizeType(type) {
+  type = String(type || "").toUpperCase();
 
-    if (type.includes("SEDAN")) return "Full Size Sedan";
-    if (type.includes("SUV")) return "Full Size SUV";
-    if (type.includes("EXECUTIVE")) return "Executive Vehicles";
-    if (type.includes("ELECTRIC")) return "Electric Vehicle";
-    if (type.includes("BOAT")) return "Hurricane Boat";
+  if (type.includes("SEDAN")) return "Full Size Sedan";
+  if (type.includes("SUV")) return "Full Size SUV";
+  if (type.includes("EXECUTIVE")) return "Executive Vehicles";
+  if (type.includes("ELECTRIC")) return "Electric Vehicle";
+  if (type.includes("BOAT")) return "Hurricane Boat";
 
-    return type;
-  }
-
-  const rentalClass = normalizeType(
-  contract.preference || new URLSearchParams(window.location.search).get("preference") || ""
-);
-  const rentalType = String(contract.rentalType || "").toLowerCase().includes("boat") ? "boat" : "car";
-  const dailyRate = rates[rentalClass] || 0;
-
-  document.getElementById("rentalType").value = rentalType;
-  document.getElementById("dailyRate").value = dailyRate;
-  document.getElementById("startDate").value = contract.startDate || new URLSearchParams(window.location.search).get("startDate") || "";
-document.getElementById("endDate").value = contract.endDate || new URLSearchParams(window.location.search).get("endDate") || "";
-
-  setTimeout(function () {
-  calculateTotal();
-}, 300);
-
-  function calculateTotal() {
-    const rentalType = document.getElementById("rentalType").value;
-    const dailyRate = Number(document.getElementById("dailyRate").value);
-    const start = new Date(document.getElementById("startDate").value);
-    const end = new Date(document.getElementById("endDate").value);
-
-    if (!dailyRate || !document.getElementById("startDate").value || !document.getElementById("endDate").value || end < start) {
-      document.getElementById("result").innerHTML = "Please enter a valid rate and date range.";
-      return;
-    }
-
-    const oneDay = 1000 * 60 * 60 * 24;
-    const days = Math.ceil((end - start) / oneDay) ;
-    let total;
-
-if (weeklyRate && days >= 7) {
-  const fullWeeks = Math.floor(days / 7);
-  const extraDays = days % 7;
-  total = (fullWeeks * weeklyRate) + (extraDays * dailyRate);
-} else {
-  total = days * dailyRate;
+  return type;
 }
-    const deposit = rentalType === "car" ? 200 : 0;
-    const remaining = Math.max(total - deposit, 0);
 
-    document.getElementById("result").innerHTML =
-  "<strong>Rental Class:</strong> " + rentalClass + "<br>" +
-  "<strong>Rental Days:</strong> " + days + "<br>" +
-  "<strong>Daily Rate:</strong> $" + dailyRate + "<br>" +
-  (weeklyRate ? "<strong>Weekly Rate:</strong> $" + weeklyRate + "<br>" : "") +
-  "<strong>Rental Total:</strong> $" + total + "<br>" +
-  "<strong>Pay Today:</strong> $" + deposit + " Deposit<br>" +
-  "<strong>Balance Due At Pickup:</strong> $" + remaining;
+const rentalClass = normalizeType(contract.preference);
+const rentalType = String(contract.rentalType).toLowerCase().includes("boat") ? "boat" : "car";
+const rateInfo = rates[rentalClass] || { daily: 0, weekly: 0 };
+const dailyRate = rateInfo.daily;
+const weeklyRate = rateInfo.weekly;
+
+document.getElementById("rentalType").value = rentalType;
+document.getElementById("dailyRate").value = dailyRate;
+document.getElementById("startDate").value = contract.startDate;
+document.getElementById("endDate").value = contract.endDate;
+
+calculateTotal();
+
+function calculateTotal() {
+  const startDateValue = document.getElementById("startDate").value;
+  const endDateValue = document.getElementById("endDate").value;
+
+  if (!dailyRate || !startDateValue || !endDateValue) {
+    document.getElementById("result").innerHTML = "Unable to calculate total. Please contact Swift Rentals.";
+    return;
   }
+
+  const start = new Date(startDateValue + "T00:00:00");
+  const end = new Date(endDateValue + "T00:00:00");
+
+  const oneDay = 1000 * 60 * 60 * 24;
+  const days = Math.ceil((end - start) / oneDay);
+
+  let total;
+
+  if (weeklyRate && days >= 7) {
+    const fullWeeks = Math.floor(days / 7);
+    const extraDays = days % 7;
+    total = (fullWeeks * weeklyRate) + (extraDays * dailyRate);
+  } else {
+    total = days * dailyRate;
+  }
+
+  const deposit = rentalType === "car" ? 200 : 0;
+  const remaining = Math.max(total - deposit, 0);
+
+  document.getElementById("result").innerHTML =
+    "<strong>Rental Class:</strong> " + rentalClass + "<br>" +
+    "<strong>Rental Days:</strong> " + days + "<br>" +
+    "<strong>Daily Rate:</strong> $" + dailyRate + "<br>" +
+    (weeklyRate ? "<strong>Weekly Rate:</strong> $" + weeklyRate + "<br>" : "") +
+    "<strong>Rental Total:</strong> $" + total + "<br>" +
+    "<strong>Pay Today:</strong> $" + deposit + " Deposit<br>" +
+    "<strong>Balance Due At Pickup:</strong> $" + remaining;
+}
 </script>
 
 </body>
