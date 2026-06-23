@@ -68,8 +68,8 @@
 
 <script>
   const contract =
-  JSON.parse(sessionStorage.getItem("swiftContract") || "null") ||
-  JSON.parse(sessionStorage.getItem("swiftReservation") || "{}");
+  JSON.parse(localStorage.getItem("swiftContract") || "null") ||
+  JSON.parse(localStorage.getItem("swiftReservation") || "{}");
 
   const rates = {
   "Full Size Sedan": { daily: 75, weekly: 490 },
