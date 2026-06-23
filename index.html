@@ -507,7 +507,7 @@ document.getElementById("reservationForm").addEventListener("submit", async func
     mode: "no-cors"
   });
 
-sessionStorage.setItem("swiftReservation", JSON.stringify({
+localStorage.setItem("swiftReservation", JSON.stringify({
   fullName: formData.get("Full Name"),
   phone: formData.get("Phone Number"),
   email: formData.get("Email"),
