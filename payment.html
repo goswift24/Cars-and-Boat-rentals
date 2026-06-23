@@ -67,7 +67,9 @@
 </div>
 
 <script>
-  const contract = JSON.parse(sessionStorage.getItem("swiftContract") || "{}");
+  const contract =
+  JSON.parse(sessionStorage.getItem("swiftContract") || "null") ||
+  JSON.parse(sessionStorage.getItem("swiftReservation") || "{}");
 
   const rates = {
   "Full Size Sedan": { daily: 75, weekly: 490 },
@@ -98,9 +100,9 @@
   document.getElementById("startDate").value = contract.startDate || "";
   document.getElementById("endDate").value = contract.endDate || "";
 
-  if (dailyRate && contract.startDate && contract.endDate) {
-    calculateTotal();
-  }
+  setTimeout(function () {
+  calculateTotal();
+}, 300);
 
   function calculateTotal() {
     const rentalType = document.getElementById("rentalType").value;
