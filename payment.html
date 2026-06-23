@@ -21,21 +21,20 @@
   <p>Calculate your rental total and choose your payment method.</p>
 
   <label>Rental Type</label>
-  <select id="rentalType">
+  <select id="rentalType" disabled> 
     <option value="car">Car Rental</option>
     <option value="boat">Boat Rental</option>
   </select>
 
   <label>Daily Rate</label>
-  <input type="number" id="dailyRate" placeholder="Example: 75">
+  <input type="number" id="DailyRate" readonly>
 
   <label>Start Date</label>
-  <input type="date" id="startDate">
+  <input type="date" id="startDate" readonly>
 
   <label>End Date</label>
-  <input type="date" id="endDate">
+  <input type="date" id="endDate" readonly>
 
-  <button class="btn" onclick="calculateTotal()">Calculate Total</button>
 
   <div class="result" id="result">
     Enter rental details to calculate total.
@@ -71,12 +70,12 @@
   const contract = JSON.parse(sessionStorage.getItem("swiftContract") || "{}");
 
   const rates = {
-    "Full Size Sedan": 75,
-    "Full Size SUV": 80,
-    "Executive Vehicles": 85,
-    "Electric Vehicle": 100,
-    "Hurricane Boat": 490
-  };
+  "Full Size Sedan": { daily: 75, weekly: 490 },
+  "Full Size SUV": { daily: 80, weekly: 525 },
+  "Executive Vehicles": { daily: 85, weekly: 560 },
+  "Electric Vehicle": { daily: 100, weekly: 650 },
+  "Hurricane Boat": { daily: 490, weekly: 0 }
+};
 
   function normalizeType(type) {
     type = String(type || "").toUpperCase();
@@ -116,17 +115,26 @@
 
     const oneDay = 1000 * 60 * 60 * 24;
     const days = Math.ceil((end - start) / oneDay) ;
-    const total = days * dailyRate;
+    let total;
+
+if (weeklyRate && days >= 7) {
+  const fullWeeks = Math.floor(days / 7);
+  const extraDays = days % 7;
+  total = (fullWeeks * weeklyRate) + (extraDays * dailyRate);
+} else {
+  total = days * dailyRate;
+}
     const deposit = rentalType === "car" ? 200 : 0;
     const remaining = Math.max(total - deposit, 0);
 
     document.getElementById("result").innerHTML =
-      "<strong>Rental Class:</strong> " + rentalClass + "<br>" +
-      "<strong>Rental Days:</strong> " + days + "<br>" +
-      "<strong>Daily Rate:</strong> $" + dailyRate + "<br>" +
-      "<strong>Rental Total:</strong> $" + total + "<br>" +
-      "<strong>Deposit Due Today:</strong> $" + deposit + "<br>" +
-      "<strong>Remaining Balance:</strong> $" + remaining;
+  "<strong>Rental Class:</strong> " + rentalClass + "<br>" +
+  "<strong>Rental Days:</strong> " + days + "<br>" +
+  "<strong>Daily Rate:</strong> $" + dailyRate + "<br>" +
+  (weeklyRate ? "<strong>Weekly Rate:</strong> $" + weeklyRate + "<br>" : "") +
+  "<strong>Rental Total:</strong> $" + total + "<br>" +
+  "<strong>Pay Today:</strong> $" + deposit + " Deposit<br>" +
+  "<strong>Balance Due At Pickup:</strong> $" + remaining;
   }
 </script>
 
