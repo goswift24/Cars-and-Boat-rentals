@@ -116,18 +116,20 @@ async function submitLicense() {
     ]
   };
 
-  await fetch(UPLOAD_SCRIPT_URL, {
-    method: "POST",
-    body: JSON.stringify(payload),
-    mode: "no-cors"
-  });
+  fetch(UPLOAD_SCRIPT_URL, {
+  method: "POST",
+  body: JSON.stringify(payload),
+  mode: "no-cors"
+});
 
-  sessionStorage.setItem("swiftLicense", JSON.stringify({
-    licenseNumber: licenseNumber,
-    licenseState: licenseState
-  }));
+sessionStorage.setItem("swiftLicense", JSON.stringify({
+  licenseNumber: licenseNumber,
+  licenseState: licenseState
+}));
 
-  window.location.href = "contract.html";
+alert("Driver verification submitted. Continue to rental agreement.");
+
+window.location.href = "contract.html";
 }
 </script>
 
