@@ -131,8 +131,9 @@ fetch("https://script.google.com/macros/s/AKfycbybjn3i9pdNMMfHnmqrkwEXSyPOO3YwS-
   endDate: reservation.endDate || ""
 });
 
+setTimeout(function () {    
 window.location.href = "payment.html?" + params.toString();
-  }
+  }, 3000);
 </script>
 
 </body>
