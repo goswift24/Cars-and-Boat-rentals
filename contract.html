@@ -110,11 +110,19 @@
       return;
     }
 
-    localStorage.setItem("swiftContract", JSON.stringify({
-      ...reservation,
-      signature: document.getElementById("signature").value,
-      signedAt: new Date().toLocaleString()
-    }));
+    const signedContract = {
+  ...reservation,
+  signature: document.getElementById("signature").value,
+  signedAt: new Date().toLocaleString()
+};
+
+localStorage.setItem("swiftContract", JSON.stringify(signedContract));
+
+fetch("https://script.google.com/macros/s/AKfycbybjn3i9pdNMMfHnmqrkwEXSyPOO3YwS-q6hmQ7gdykVUk5xzxg9MT89K8HmnZ_9_K_sg/exec", {
+  method: "POST",
+  body: JSON.stringify(signedContract),
+  mode: "no-cors"
+});
 
     const params = new URLSearchParams({
   rentalType: reservation.rentalType || "",
