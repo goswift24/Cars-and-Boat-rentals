@@ -9,7 +9,7 @@
     .box { max-width:900px; margin:auto; background:white; padding:30px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.08); }
     h1, h2 { margin-top:0; }
     label { display:block; font-weight:700; margin-top:15px; }
-    input { width:100%; padding:13px; border:1px solid #ccc; border-radius:10px; font-size:16px; }
+    input { width:100%; padding:13px; border:1px solid #ccc; border-radius:10px; font-size:16px; box-sizing:border-box; }
     .terms { background:#f7f7f7; padding:20px; border-radius:14px; margin-top:20px; max-height:420px; overflow:auto; }
     .btn { width:100%; background:#000; color:white; padding:16px; border:0; border-radius:12px; font-weight:900; font-size:17px; margin-top:20px; cursor:pointer; }
   </style>
@@ -44,7 +44,6 @@
 
   <div class="terms">
     <h2>SWIFT RENTALS LLC – VEHICLE USE AGREEMENT</h2>
-
     <p>This Vehicle Use Agreement is entered into between Swift Rentals LLC and the undersigned authorized individual. By signing below, the Driver agrees to all terms and conditions herein.</p>
 
     <h3>1. Vehicle Authorization & Purpose</h3>
@@ -89,6 +88,8 @@
 </div>
 
 <script>
+const CONTRACT_API_URL = "https://script.google.com/macros/s/AKfycbybjn3i9pdNMMfHnmqrkwEXSyPOO3YwS-q6hmQ7gdykVUk5xzxg9MT89K8HmnZ_9_K_sg/exec";
+
 const urlParams = new URLSearchParams(window.location.search);
 
 const reservation = {
@@ -115,24 +116,36 @@ async function submitContract() {
     return;
   }
 
-  if (!document.getElementById("signature").value.trim()) {
+  const signature = document.getElementById("signature").value.trim();
+
+  if (!signature) {
     alert("Please type your full legal name as your electronic signature.");
     return;
   }
 
   const signedContract = {
-    ...reservation,
-    signature: document.getElementById("signature").value.trim(),
+    fullName: reservation.fullName,
+    phone: reservation.phone,
+    email: reservation.email,
+    rentalType: reservation.rentalType,
+    preference: reservation.preference,
+    startDate: reservation.startDate,
+    endDate: reservation.endDate,
+    signature: signature,
     signedAt: new Date().toLocaleString()
   };
 
   localStorage.setItem("swiftContract", JSON.stringify(signedContract));
 
-  await fetch("https://script.google.com/macros/s/AKfycbybjn3i9pdNMMfHnmqrkwEXSyPOO3YwS-q6hmQ7gdykVUk5xzxg9MT89K8HmnZ_9_K_sg/exec", {
-    method: "POST",
-    body: JSON.stringify(signedContract),
-    mode: "no-cors"
-  });
+  try {
+    await fetch(CONTRACT_API_URL, {
+      method: "POST",
+      body: JSON.stringify(signedContract),
+      mode: "no-cors"
+    });
+  } catch (error) {
+    console.log("Contract upload error:", error);
+  }
 
   const params = new URLSearchParams({
     rentalType: reservation.rentalType,
@@ -141,9 +154,7 @@ async function submitContract() {
     endDate: reservation.endDate
   });
 
-  setTimeout(function () {
-    window.location.href = "payment.html?" + params.toString();
-  }, 1500);
+  window.location.href = "payment.html?" + params.toString();
 }
 </script>
 
