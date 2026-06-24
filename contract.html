@@ -99,7 +99,7 @@
   document.getElementById("startDate").value = reservation.startDate || "";
   document.getElementById("endDate").value = reservation.endDate || "";
 
-  function submitContract() {
+  async function submitContract() {
     if (!document.getElementById("agree").checked) {
       alert("Please agree to the terms before continuing.");
       return;
