@@ -116,7 +116,7 @@ async function submitLicense() {
     ]
   };
 
-  fetch(UPLOAD_SCRIPT_URL, {
+  await fetch(UPLOAD_SCRIPT_URL, {
   method: "POST",
   body: JSON.stringify(payload),
   mode: "no-cors"
@@ -127,9 +127,9 @@ localStorage.setItem("swiftLicense", JSON.stringify({
   licenseState: licenseState
 }));
 
-alert("Driver verification submitted. Continue to rental agreement.");
-
-window.location.href = "contract.html";
+setTimeout(function () {
+  window.location.href = "contract.html";
+}, 2000);
 }
 </script>
 
