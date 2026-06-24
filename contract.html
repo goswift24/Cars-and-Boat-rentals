@@ -89,8 +89,17 @@
 </div>
 
 <script>
-  const reservation = 
-    JSON.parse(localStorage.getItem("swiftReservation") || "{}");
+  const urlParams = new URLSearchParams(window.location.search);
+
+const reservation = {
+  fullName: urlParams.get("fullName") || "",
+  phone: urlParams.get("phone") || "",
+  email: urlParams.get("email") || "",
+  rentalType: urlParams.get("rentalType") || "",
+  preference: urlParams.get("preference") || "",
+  startDate: urlParams.get("startDate") || "",
+  endDate: urlParams.get("endDate") || ""
+};
 
   document.getElementById("fullName").value = reservation.fullName || "";
   document.getElementById("phone").value = reservation.phone || "";
