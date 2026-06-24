@@ -89,7 +89,7 @@
 </div>
 
 <script>
-  const urlParams = new URLSearchParams(window.location.search);
+const urlParams = new URLSearchParams(window.location.search);
 
 const reservation = {
   fullName: urlParams.get("fullName") || "",
@@ -101,53 +101,50 @@ const reservation = {
   endDate: urlParams.get("endDate") || ""
 };
 
-  document.getElementById("fullName").value = reservation.fullName || "";
-  document.getElementById("phone").value = reservation.phone || "";
-  document.getElementById("email").value = reservation.email || "";
-  document.getElementById("rentalType").value = reservation.rentalType || "";
-  document.getElementById("preference").value = reservation.preference || "";
-  document.getElementById("startDate").value = reservation.startDate || "";
-  document.getElementById("endDate").value = reservation.endDate || "";
+document.getElementById("fullName").value = reservation.fullName;
+document.getElementById("phone").value = reservation.phone;
+document.getElementById("email").value = reservation.email;
+document.getElementById("rentalType").value = reservation.rentalType;
+document.getElementById("preference").value = reservation.preference;
+document.getElementById("startDate").value = reservation.startDate;
+document.getElementById("endDate").value = reservation.endDate;
 
-  async function submitContract() {
-    if (!document.getElementById("agree").checked) {
-      alert("Please agree to the terms before continuing.");
-      return;
-    }
+async function submitContract() {
+  if (!document.getElementById("agree").checked) {
+    alert("Please agree to the terms before continuing.");
+    return;
+  }
 
-    if (!document.getElementById("signature").value.trim()) {
-      alert("Please type your full legal name as your electronic signature.");
-      return;
-    }
+  if (!document.getElementById("signature").value.trim()) {
+    alert("Please type your full legal name as your electronic signature.");
+    return;
+  }
 
-    const signedContract = {
-  ...reservation,
-  signature: document.getElementById("signature").value,
-  signedAt: new Date().toLocaleString()
-};
+  const signedContract = {
+    ...reservation,
+    signature: document.getElementById("signature").value.trim(),
+    signedAt: new Date().toLocaleString()
+  };
 
-localStorage.setItem("swiftContract", JSON.stringify(signedContract));
+  localStorage.setItem("swiftContract", JSON.stringify(signedContract));
 
-fetch("https://script.google.com/macros/s/AKfycbybjn3i9pdNMMfHnmqrkwEXSyPOO3YwS-q6hmQ7gdykVUk5xzxg9MT89K8HmnZ_9_K_sg/exec", {
-  method: "POST",
-  body: JSON.stringify(signedContract),
-  mode: "no-cors"
-});
+  await fetch("https://script.google.com/macros/s/AKfycbybjn3i9pdNMMfHnmqrkwEXSyPOO3YwS-q6hmQ7gdykVUk5xzxg9MT89K8HmnZ_9_K_sg/exec", {
+    method: "POST",
+    body: JSON.stringify(signedContract),
+    mode: "no-cors"
+  });
 
-const params = new URLSearchParams({
-  rentalType: reservation.rentalType || "",
-  preference: reservation.preference || "",
-  startDate: reservation.startDate || "",
-  endDate: reservation.endDate || ""
-});
+  const params = new URLSearchParams({
+    rentalType: reservation.rentalType,
+    preference: reservation.preference,
+    startDate: reservation.startDate,
+    endDate: reservation.endDate
+  });
 
-setTimeout(function () {
-  window.location.href = "payment.html?" + params.toString();
-}, 3000);
-
-setTimeout(function () {    
-window.location.href = "payment.html?" + params.toString();
-  }, 3000);
+  setTimeout(function () {
+    window.location.href = "payment.html?" + params.toString();
+  }, 1500);
+}
 </script>
 
 </body>
