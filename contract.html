@@ -89,7 +89,8 @@
 </div>
 
 <script>
-  const reservation = JSON.parse(localStorage.getItem("swiftReservation") || "{}");
+  const reservation = 
+    JSON.parse(localStorage.getItem("swiftReservation") || "{}");
 
   document.getElementById("fullName").value = reservation.fullName || "";
   document.getElementById("phone").value = reservation.phone || "";
