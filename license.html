@@ -128,17 +128,11 @@ localStorage.setItem("swiftLicense", JSON.stringify({
 }));
 
 setTimeout(function () {
-  const params = new URLSearchParams({
-  fullName: reservation.fullName || "",
-  phone: reservation.phone || "",
-  email: reservation.email || "",
-  rentalType: reservation.rentalType || "",
-  preference: reservation.preference || "",
-  startDate: reservation.startDate || "",
-  endDate: reservation.endDate || ""
-});
+  const urlParams = new URLSearchParams(window.location.search);
+  const reservationId = urlParams.get("id");
 
-window.location.href = "contract.html?" + params.toString();
+  window.location.href =
+    "contract.html?id=" + encodeURIComponent(reservationId);
 }, 2000);
 }
 </script>
