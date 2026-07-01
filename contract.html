@@ -19,7 +19,7 @@
 <div class="box">
   <h1>Swift Rentals Vehicle Use Agreement</h1>
 
-  <h2>Driver Information</h2>
+  <h2>Driver & Vehicle Information</h2>
 
   <label>Full Name</label>
   <input id="fullName" readonly>
@@ -33,8 +33,20 @@
   <label>Rental Type</label>
   <input id="rentalType" readonly>
 
-  <label>Vehicle / Class</label>
+  <label>Requested Class</label>
   <input id="preference" readonly>
+
+  <label>Assigned Vehicle</label>
+  <input id="assignedVehicle" readonly>
+
+  <label>Assigned Plate</label>
+  <input id="assignedPlate" readonly>
+
+  <label>Assigned VIN</label>
+  <input id="assignedVin" readonly>
+
+  <label>Fuel Level</label>
+  <input id="fuelLevel" readonly>
 
   <label>Date Out</label>
   <input id="startDate" readonly>
@@ -88,29 +100,53 @@
 </div>
 
 <script>
+const RESERVATION_API_URL = "https://script.google.com/macros/s/AKfycbxKQiPZrk3ZlFwPKZiJLSiTPMJ4bHKAgOQ3KFkpBBq9eXCR95J_GK0IUdTbveMvzaA/exec";
+
 const CONTRACT_API_URL = "https://script.google.com/macros/s/AKfycbybjn3i9pdNMMfHnmqrkwEXSyPOO3YwS-q6hmQ7gdykVUk5xzxg9MT89K8HmnZ_9_K_sg/exec";
 
+let reservation = {};
+
 const urlParams = new URLSearchParams(window.location.search);
+const reservationId = urlParams.get("id");
 
-const reservation = {
-  fullName: urlParams.get("fullName") || "",
-  phone: urlParams.get("phone") || "",
-  email: urlParams.get("email") || "",
-  rentalType: urlParams.get("rentalType") || "",
-  preference: urlParams.get("preference") || "",
-  startDate: urlParams.get("startDate") || "",
-  endDate: urlParams.get("endDate") || ""
-};
+if (!reservationId) {
+  alert("Reservation ID missing. Please contact Swift Rentals.");
+} else {
+  const script = document.createElement("script");
+  script.src = RESERVATION_API_URL +
+    "?action=reservation&id=" +
+    encodeURIComponent(reservationId) +
+    "&callback=loadReservation";
+  document.body.appendChild(script);
+}
 
-document.getElementById("fullName").value = reservation.fullName;
-document.getElementById("phone").value = reservation.phone;
-document.getElementById("email").value = reservation.email;
-document.getElementById("rentalType").value = reservation.rentalType;
-document.getElementById("preference").value = reservation.preference;
-document.getElementById("startDate").value = reservation.startDate;
-document.getElementById("endDate").value = reservation.endDate;
+function loadReservation(data) {
+  if (!data || data.error) {
+    alert("Reservation not found. Please contact Swift Rentals.");
+    return;
+  }
+
+  reservation = data;
+
+  document.getElementById("fullName").value = reservation.fullName || "";
+  document.getElementById("phone").value = reservation.phone || "";
+  document.getElementById("email").value = reservation.email || "";
+  document.getElementById("rentalType").value = reservation.rentalType || "";
+  document.getElementById("preference").value = reservation.preference || "";
+  document.getElementById("assignedVehicle").value = reservation.assignedVehicle || "";
+  document.getElementById("assignedPlate").value = reservation.assignedPlate || "";
+  document.getElementById("assignedVin").value = reservation.assignedVin || "";
+  document.getElementById("fuelLevel").value = reservation.fuelLevel || "50%";
+  document.getElementById("startDate").value = reservation.startDate || "";
+  document.getElementById("endDate").value = reservation.endDate || "";
+}
 
 async function submitContract() {
+  if (!reservation || !reservation.reservationId) {
+    alert("Reservation has not loaded yet. Please wait a few seconds and try again.");
+    return;
+  }
+
   if (!document.getElementById("agree").checked) {
     alert("Please agree to the terms before continuing.");
     return;
@@ -124,34 +160,24 @@ async function submitContract() {
   }
 
   const signedContract = {
-    fullName: reservation.fullName,
-    phone: reservation.phone,
-    email: reservation.email,
-    rentalType: reservation.rentalType,
-    preference: reservation.preference,
-    startDate: reservation.startDate,
-    endDate: reservation.endDate,
+    ...reservation,
     signature: signature,
     signedAt: new Date().toLocaleString()
   };
 
   localStorage.setItem("swiftContract", JSON.stringify(signedContract));
 
-  try {
-    await fetch(CONTRACT_API_URL, {
-      method: "POST",
-      body: JSON.stringify(signedContract),
-      mode: "no-cors"
-    });
-  } catch (error) {
-    console.log("Contract upload error:", error);
-  }
+  await fetch(CONTRACT_API_URL, {
+    method: "POST",
+    body: JSON.stringify(signedContract),
+    mode: "no-cors"
+  });
 
   const params = new URLSearchParams({
-    rentalType: reservation.rentalType,
-    preference: reservation.preference,
-    startDate: reservation.startDate,
-    endDate: reservation.endDate
+    rentalType: reservation.rentalType || "",
+    preference: reservation.preference || "",
+    startDate: reservation.startDate || "",
+    endDate: reservation.endDate || ""
   });
 
   window.location.href = "payment.html?" + params.toString();
