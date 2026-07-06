@@ -53,7 +53,7 @@
     I certify that this driver license is valid and belongs to me.
   </label>
 
-  <button class="btn" onclick="submitLicense()">Continue to Rental Agreement</button>
+  <button class="btn" id="submitBtn" onclick="submitLicense()">Submit Verification</button>
 </div>
 
 <script>
@@ -96,6 +96,10 @@ async function submitLicense() {
     return;
   }
 
+const submitBtn = document.getElementById("submitBtn");
+submitBtn.disabled = true;
+submitBtn.innerText = "Uploading verification... Please wait";
+  
   const payload = {
     fullName: reservation.fullName,
     phone: reservation.phone,
