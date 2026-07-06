@@ -159,11 +159,15 @@ async function submitContract() {
     return;
   }
 
-  const signedContract = {
-    ...reservation,
-    signature: signature,
-    signedAt: new Date().toLocaleString()
-  };
+  const licenseInfo = JSON.parse(localStorage.getItem("swiftLicense") || "{}");
+
+const signedContract = {
+  ...reservation,
+  licenseNumber: licenseInfo.licenseNumber || "",
+  licenseState: licenseInfo.licenseState || "",
+  signature: signature,
+  signedAt: new Date().toLocaleString()
+};
 
   localStorage.setItem("swiftContract", JSON.stringify(signedContract));
 
