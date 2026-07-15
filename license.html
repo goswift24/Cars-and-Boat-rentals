@@ -59,11 +59,45 @@
 <script>
 const UPLOAD_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxZ6v1FB2fJC43cduWKOhmKl2YfjoEWYRRK_vnpE7jDGUKMNxVzPFnNUm5tS5rlN7oMfw/exec";
 
-const reservation = JSON.parse(localStorage.getItem("swiftReservation") || "{}");
+const RESERVATION_API_URL =
+  "https://script.google.com/macros/s/AKfycbxKQiPZrk3ZlFwPKZiJLSiTPMJ4bHKAgOQ3KFkpBBq9eXCR95J_GK0IUdTbveMvzaA/exec";
 
-document.getElementById("fullName").value = reservation.fullName || "";
-document.getElementById("phone").value = reservation.phone || "";
-document.getElementById("email").value = reservation.email || "";
+let reservation =
+  JSON.parse(localStorage.getItem("swiftReservation") || "{}");
+
+const urlParams = new URLSearchParams(window.location.search);
+const reservationId = urlParams.get("id");
+
+function fillReservationFields() {
+  document.getElementById("fullName").value = reservation.fullName || "";
+  document.getElementById("phone").value = reservation.phone || "";
+  document.getElementById("email").value = reservation.email || "";
+}
+
+function loadLicenseReservation(data) {
+  if (!data || data.error) {
+    alert("Reservation not found. Please contact Swift Rentals.");
+    return;
+  }
+
+  reservation = data;
+  localStorage.setItem("swiftReservation", JSON.stringify(reservation));
+  fillReservationFields();
+}
+
+if (reservationId) {
+  const reservationScript = document.createElement("script");
+
+  reservationScript.src =
+    RESERVATION_API_URL +
+    "?action=reservation&id=" +
+    encodeURIComponent(reservationId) +
+    "&callback=loadLicenseReservation";
+
+  document.body.appendChild(reservationScript);
+} else {
+  fillReservationFields();
+}
 
 function fileToBase64(file) {
   return new Promise((resolve, reject) => {
