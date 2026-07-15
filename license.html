@@ -18,6 +18,8 @@
   <h1>Driver Verification</h1>
   <p>Please complete driver verification before continuing to the rental agreement.</p>
 
+<div id="licenseForm" style="visibility:hidden;">
+  
   <label>Full Name</label>
   <input id="fullName" readonly>
 
@@ -55,6 +57,7 @@
 
   <button class="btn" id="submitBtn" onclick="submitLicense()">Submit Verification</button>
 </div>
+</div>
 
 <script>
 const UPLOAD_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxZ6v1FB2fJC43cduWKOhmKl2YfjoEWYRRK_vnpE7jDGUKMNxVzPFnNUm5tS5rlN7oMfw/exec";
@@ -72,6 +75,8 @@ function fillReservationFields() {
   document.getElementById("fullName").value = reservation.fullName || "";
   document.getElementById("phone").value = reservation.phone || "";
   document.getElementById("email").value = reservation.email || "";
+
+  document.getElementById("licenseForm").style.visibility = "visible";
 }
 
 function loadLicenseReservation(data) {
