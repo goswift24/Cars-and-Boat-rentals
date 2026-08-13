@@ -163,8 +163,16 @@ async function submitContract() {
 
 const signedContract = {
   ...reservation,
-  licenseNumber: licenseInfo.licenseNumber || "",
-  licenseState: licenseInfo.licenseState || "",
+  licenseNumber:
+    reservation.licenseNumber ||
+    licenseInfo.licenseNumber ||
+    "",
+
+  licenseState:
+    reservation.licenseState ||
+    licenseInfo.licenseState ||
+    "",
+
   signature: signature,
   signedAt: new Date().toLocaleString()
 };
